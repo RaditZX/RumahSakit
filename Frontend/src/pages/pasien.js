@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react';
-import {BrowserRouter , Routes, Route, Link,useHistory,Redirect } from "react-router-dom";
+import {Link,useHistory,useLocation,Redirect } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../compenents/navbar";
 import "../App.css";
@@ -10,11 +10,10 @@ import CurrencyFormat from 'react-currency-format';
 import currencyFormatter from 'currency-formatter';
 
 //import react boostrap
-import {Card} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import {Table} from 'react-bootstrap';
-import 'jspdf-autotable';
+import { confirmAlert } from 'react-confirm-alert';
 
 //import react-icons
 import * as BsIcons from 'react-icons/bs';
@@ -27,10 +26,33 @@ function Pasien(){
     const [name,setName] = useState('');
     const [role,setRole] = useState('');
     const [jenis_kelamin,setJenis_kelamin] = useState('');
-    const [currentPage,setCurrentPage] = useState(1);
-    const [postsPerPage] = useState(10);
+    const [currentPage,setCurrentPage] = useState(parseInt("")|| sessionStorage.getItem('page'));
+    const [postsPerPage,setPostsPerPage] = useState(parseInt("")|| sessionStorage.getItem('limit'));
     const Id = localStorage.getItem('id')
     const history = useHistory();
+    const location = useLocation();
+    const pagination = "?page="+new URLSearchParams(location.search).get('page')+"&limit="+new URLSearchParams(location.search).get('limit');
+    const Nama = "&search="+new URLSearchParams(location.search).get('search');
+    sessionStorage.setItem('page',new URLSearchParams(location.search).get('page'));
+    sessionStorage.setItem('limit',new URLSearchParams(location.search).get('limit'));
+
+    useEffect(()=>{
+        autorization();
+        getPasien();
+        getRoles();
+  
+    },[])
+
+    const getpasienPagination = () => {
+        if (search === ''){
+            history.push(`/pasien?page=${currentPage}&limit=${postsPerPage}`)
+        }
+        else{
+             history.push(`/pasien?page=${currentPage}&limit=${postsPerPage}&search=${search}`)
+        }
+        window.location.reload();
+    }
+
 
     const autorization = () => {
         axios.get(`http://localhost:3000/authenticated`,{
@@ -58,38 +80,54 @@ function Pasien(){
         .catch(err => {
             console.log(err);
         })
-    }
-    
-
-    useEffect(()=>{
-        autorization();
-        getPasien();
-        getRoles();
-  
-    },[])
-
+    }   
 
     const getPasien = () => {
-        axios.get('http://localhost:3000/pasien')     
-        .then(res => {
-            console.log(res.data);
-            setPasien(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }
-    const deletePasien = (id) => {
-        if (window.confirm('Are you sure you want to delete this item?')) {
-            axios.delete(`http://localhost:3000/pasien/${id}`)
+        if ( new URLSearchParams(location.search).get('search') === null ) {
+            axios.get(`http://localhost:3000/pasien${pagination}`)     
             .then(res => {
                 console.log(res.data);
-                getPasien();
+                setPasien(res.data);
             })
             .catch(err => {
                 console.log(err);
             })
-        }      
+        }
+        else{
+            axios.get(`http://localhost:3000/pasien${pagination}${Nama}`)     
+            .then(res => {
+                console.log(res.data);
+                setPasien(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+       
+    }
+    
+    const deletePasien = (id) => {
+        confirmAlert({
+            title: 'Delete',
+            message: 'Are you sure you want to delete this item?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+                        axios.delete(`http://localhost:3000/pasien/delete/${id}`)
+                        .then(res => {
+                            console.log(res.data);
+                            getPasien();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }      
+                },
+                {
+                    label: 'No'
+                }
+            ]});
     }
 
     //file pdf
@@ -106,6 +144,11 @@ function Pasien(){
         doc.save('Pasien.pdf');
 
     }
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+    
     return(
         <>
             <Navbar />
@@ -143,18 +186,28 @@ function Pasien(){
                                 </div>
                             </div>
                         </div>
+
+
                         
 
                        {/* fitur cari */}
                         <div className="p-2 col-example text-left">
-                            <div className="d-flex flex-row-reverse">
-                                <div className="p-2">
-                                    <Button variant="outline-primary" size="sm"><BsIcons.BsSearch /></Button>{' '}
+                                <div className="d-flex flex-row-reverse">
+                                    <div className="p">
+                                        <Button variant="btn btn-primary" onClick={getpasienPagination} size="sm"><BsIcons.BsSearch /></Button>{' '}
+                                    </div>
+                                    <div className="p-3">
+                                        <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
+                                    </div>
+                                    <div className="d-flex p-3">
+                                        <label>Limit:</label>
+                                        <Form.Control size="sm" value={postsPerPage} onChange={(e)=> setPostsPerPage(e.target.value)} type="number" placeholder="Cari" />
+                                    </div>
+                                    <div className="d-flex p-3">
+                                        <label>Page:</label>
+                                        <Form.Control size="sm" value={currentPage} onChange={(e)=> setCurrentPage(e.target.value)} type="number" placeholder="Cari" />
+                                    </div>
                                 </div>
-                                <div className="p-2">
-                                    <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
-                                </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -178,10 +231,7 @@ function Pasien(){
                                 </tr>
                             </thead>
                             <tbody>
-                                {pasien.filter(pasien => {
-                                    return pasien.nama.toLowerCase().includes(search.toLowerCase())
-                                    
-                                })
+                                {pasien
                                 .filter(pasien => {
                                     if (jenis_kelamin === '') {
                                         return pasien
@@ -191,7 +241,7 @@ function Pasien(){
                                     }
                                     
                                 })
-                                .slice(currentPage * postsPerPage - postsPerPage, currentPage * postsPerPage).map((pasien,index) => {
+                                .map((pasien,index) => {
                                     return(
                                         <tr key={index}>
                                             <td>{index+1}</td>  
@@ -280,32 +330,6 @@ function Pasien(){
                                 }
                             </tbody>
                         </Table>
-                    </div>
-                  
-                    {/* pagination */}
-                    <div className="d-flex flex-row-reverse">
-                       <ReactPaginate
-                            previousLabel={'previous'}
-                            nextLabel={'next'}
-                            breakLabel={'...'}
-                            pageCount={Math.ceil( pasien.length / postsPerPage)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={5}
-                            onPageChange={(e)=>setCurrentPage(e.selected+1)}
-                            containerClassName={'pagination'}
-                            subContainerClassName={'pages pagination'}
-                            activeClassName={'active'}
-                            pageClassName={'page-item'}
-                            previousClassName={'page-item'}
-                            nextClassName={'page-item'}
-                            previousLinkClassName={'page-link'}
-                            nextLinkClassName={'page-link'}
-                            disabledClassName={'disabled'}
-                            activeLinkClassName={'active'}
-                            pageLinkClassName={'page-link'}
-                            breakClassName={'page-item'}
-                            breakLinkClassName={'page-link'}
-                       ></ReactPaginate>
                     </div>
                 </div>
             </div>

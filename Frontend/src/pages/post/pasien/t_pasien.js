@@ -84,7 +84,7 @@ function T_pasien() {
         })
         .then(res => {
             console.log(res.data);
-           history.push('/pasien');
+           history.push('/pasien?page=1&limit=10');
         })
         .catch(err => {
             console.log(err);
@@ -141,9 +141,12 @@ function T_pasien() {
         getRoles();
     },[])
     
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
 
     if(role === 'pasien'){
-        return <Redirect to='/pasien'/>
+        return <Redirect to='/home'/>
     }
     else {
          // form tambah data pasien admin 

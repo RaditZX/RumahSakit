@@ -21,11 +21,13 @@ function U_pasien() {
     const [kode_penyakit,setKode_penyakit] = useState('');
     const [kode_kamar,setKode_kamar] = useState('');
     const [kode_biaya,setKode_biaya] = useState('');
+    const [role ,setRole] = useState('');
     const [penyakit,setPenyakit] = useState([]);
     const [kamar,setKamar] = useState([]);
     const [biaya,setBiaya] = useState([]);
     const history = useHistory();
     const {Id} = useParams();
+    const id = localStorage.getItem('id');
     
 
     const autorization = () => {
@@ -41,6 +43,16 @@ function U_pasien() {
         })
         .catch(err => {
             console.log(err.response.message);
+        })
+    }
+
+    const getRoles = () => {
+        axios.get(`http://localhost:3000/user/${Id}`)
+        .then(res => {
+            setRole(res.data.role);
+        })
+        .catch(err => {
+            console.log(err);
         })
     }
     
@@ -60,7 +72,7 @@ function U_pasien() {
         })
         .then(res => {
             console.log(res.data);
-            history.push('/pasien');
+            history.push('/pasien?page=1&limit=10');
         })
         .catch(err => {
             console.log(err);
@@ -107,6 +119,7 @@ function U_pasien() {
         getbiaya();
         getPasien();
         autorization();
+        getRoles();
     },[])
 
     const getPasien = () => {
@@ -128,6 +141,13 @@ function U_pasien() {
         })
     }
 
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+
+    if(role === 'pasien'){
+        return <Redirect to='/home'/>
+    }
      // form edit data pasien admin
     return(
         <div className="container">

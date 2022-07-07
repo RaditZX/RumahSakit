@@ -25,7 +25,7 @@ export const SidebarData = [
     //pasien
     {
         title: 'Pasien',
-        path:  `/pasien`, 
+        path:  `/pasien?page=1&limit=10`, 
         icon: <FaIcons.FaUserAlt size={20}/>,
         cName: 'nav-text'
     },
@@ -49,7 +49,7 @@ export const SidebarAdmin = [
      //penyakit
      {
         title: 'Penyakit',
-        path: '/penyakit',
+        path: '/penyakit?page=1&limit=10',
         icon: <FaIcons.FaDisease size={25}/>,
         cName: 'nav-text'
     },
@@ -57,7 +57,7 @@ export const SidebarAdmin = [
     //kamar
     {
         title: 'Kamar',
-        path:  `/kamar`, 
+        path:  `/kamar?page=1&limit=10`, 
         icon: <IoIcons.IoIosBed size={25} />,
         cName: 'nav-text'
     },
@@ -65,7 +65,7 @@ export const SidebarAdmin = [
     //biaya
     {
         title: 'biaya',
-        path:  `/biaya`, 
+        path:  `/biaya?page=1&limit=10`, 
         icon: <FaIcons.FaMoneyBill size={25} />,
         cName: 'nav-text'
     },

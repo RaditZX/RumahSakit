@@ -1,0 +1,1181 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API-Rumah Sakit",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Local server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Pasien",
+            "description": "Pasien management"
+        },
+        {
+            "name": "Penyakit",
+            "description": "Penyakit management"
+        },
+        {
+            "name": "Kamar",
+            "description": "Kamar management"
+        },
+        {
+            "name": "Biaya",
+            "description": "Biaya management"
+        },
+        {
+            "namae":"User"
+        }
+    ],
+    "paths": {
+        "/pasien": {
+            "get": {
+                "summary": "List all pasien",
+                "description": "Get all Pasien Data",
+                "tags": [
+                    "Pasien"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/pasien/{Id}": {
+            "get": {
+                "description": "Get pasien data by id",
+                "tags": [
+                    "Pasien"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pasien/namapasien/{name}": {
+            "get": {
+                "description": "get pasien data by name",
+                "tags": [
+                    "Pasien"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Pasien name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addpasien": {
+            "post": {
+                "description": "Add pasien data",
+                "tags": [
+                    "Pasien"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Pasiens"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/edit/{Id}": {
+            "put": {
+                "description": "Update pasien data by id",
+                "tags": [
+                    "Pasien"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Pasiens"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/edit/updateuserbyname/{name}":{
+            "put": {
+                "description": "Update pasien data by name",
+                "tags": [
+                    "Pasien"
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "User name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Pasiens"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pasien/delete/{Id}": {
+            "delete": {
+                "description": "Delete pasien data by id",
+                "tags": [
+                    "Pasien"
+                ],
+                "parameters": [
+                    {
+                        "name":"Id",
+                        "in": "path",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Pasiens"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        "/penyakit":{
+            "get": {
+                "description": "List all penyakit",
+                "tags": [
+                    "Penyakit"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/penyakits"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        
+        },
+        "/penyakit/{Id}":{
+            "get": {
+                "description": "Get penyakit data by id",
+                "tags": [
+                    "Penyakit"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Penyakit id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/penyakits"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addpenyakit":{
+            "post": {
+                "description": "Add penyakit data",
+                "tags": [
+                    "Penyakit"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/penyakits"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/penyakits"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/editpenyakit/{Id}":{
+            "put": {
+                "description": "Update penyakit data by id",
+                "tags": [
+                    "Penyakit"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Penyakit id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/penyakits"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/penyakits"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/penyakit/delete/{Id}": {
+            "delete": {
+                "description": "Delete penyakit data by id",
+                "tags": [
+                    "Penyakit"
+                ],
+                "parameters": [
+                    {
+                        "name":"Id",
+                        "in": "path",
+                        "description": "Penyakit id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/penyakits"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        "/kamar":{
+            "get": {
+                "description": "List all kamar",
+                "tags": [
+                    "Kamar"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/kamars"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        
+        },
+        "/kamar/{Id}":{
+            "get": {
+                "description": "Get kamar data by id",
+                "tags": [
+                    "Kamar"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Kamar Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/kamars"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addkamar":{
+            "post": {
+                "description": "Add kamar data",
+                "tags": [
+                    "Kamar"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/kamars"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/kamars"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/editkamar/{Id}":{
+            "put": {
+                "description": "Update kamar data by id",
+                "tags": [
+                    "Kamar"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Kamar Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/kamars"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/kamars"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/kamar/delete/{Id}": {
+            "delete": {
+                "description": "Delete kamar data by id",
+                "tags": [
+                    "Kamar"
+                ],
+                "parameters": [
+                    {
+                        "name":"Id",
+                        "in": "path",
+                        "description": "Kamar Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/kamars"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+
+        "/biaya":{
+            "get": {
+                "description": "List all biaya",
+                "tags": [
+                    "Biaya"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Biaya_perawatan"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        
+        },
+        "/biaya/{Id}":{
+            "get": {
+                "description": "Get biaya data by id",
+                "tags": [
+                    "Biaya"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Biaya Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Biaya_perawatan"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/addbiaya":{
+            "post": {
+                "description": "Add biaya data",
+                "tags": [
+                    "Biaya"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Biaya_perawatan"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Biaya_perawatan"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/editbiaya/{Id}":{
+            "put": {
+                "description": "Update biaya data by id",
+                "tags": [
+                    "Biaya"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "Biaya Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Biaya_perawatan"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Biaya_perawatan"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/biaya/delete/{Id}": {
+            "delete": {
+                "description": "Delete biaya data by id",
+                "tags": [
+                    "Biaya"
+                ],
+                "parameters": [
+                    {
+                        "name":"Id",
+                        "in": "path",
+                        "description": "Biaya Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Biaya_perawatan"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+
+
+
+        "/user/{Id}":{
+            "get":{
+                "description": "Get user data by id",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "User Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login":{
+            "post":{
+                "description": "Login user",
+                "tags": [
+                    "User"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/authentication"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/authentication"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/register":{
+            "post":{
+                "description": "Register user",
+                "tags": [
+                    "User"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/register"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/register"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/forgotpassword":{
+            "post":{
+                "description": "Forgot password by send email",
+                "tags": [
+                    "User"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/forgotpassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/forgotpassword"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyemail":{
+            "post":{
+                "description": "Verify email by send email",
+                "tags": [
+                    "User"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/verifyemail"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/verifyemail"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reset/{token}":{
+            "put":{
+                "description": "Reset password by token",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/resetpassword"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/resetpassword"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verifikasi/{token}":{
+            "put":{
+                "description": "Verifikasi email by token",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/verifikasi"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        },
+        "/user/update/{Id}":{
+            "put":{
+                "description": "Update user data by id",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "path",
+                        "description": "User Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        
+        
+
+    },
+    "components": {
+        "schemas": {
+            "Pasiens": {
+                "type": "object",
+                "properties": {
+                    "nama": {
+                        "type": "string"
+                    },
+                    "alamat": {
+                        "type": "string"
+                    },
+                    "jenis_kelamin": {
+                        "type": "string"
+                    },
+                    "Golongan_Darah": {
+                        "type": "string"
+                    },
+                    "kode_penyakit": {
+                        "type": "string"
+                    },
+                    "kode_kamar": {
+                        "type": "string"
+                    },
+                    "kode_biaya": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "penyakits": {
+                "type": "object",
+                "properties": {
+                   "nama_penyakit": {
+                        "type": "string"
+                    },
+                    "deskripsi":{
+                        "type": "string"
+                    },
+                    "obat":{
+                        "type": "string"
+                    },
+                    "harga_obat":{
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                    
+                }
+            },
+            "kamars":{
+                "type": "object",
+                "properties": {
+                    "nama_kamar": {
+                        "type": "string"
+                    },
+                    "harga": {
+                        "type": "integer"
+                    },
+                    "deskripsi":{
+                        "type": "string"
+                    },
+                    "status":{
+                        "type": "string"
+                    },
+                    "lantai":{
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "reset":{
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    }
+                }
+
+            },
+            "Biaya_perawatan": {
+                "type": "object",
+                "properties": {
+                    "nama_biaya": {
+                        "type": "string"
+                    },
+                    "harga": {
+                        "type": "integer"
+                    },
+                    "deskripsi": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "authentication":{
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "verifyemail":{
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    }
+                }
+
+            },
+            "User":{
+                "type": "object",
+                "properties": {
+                    "nama_awal": {
+                        "type": "string"
+                    },
+                    "nama_akhir": {
+                        "type": "string"
+                    },
+                    "alamat": {
+                        "type": "string"
+                    },
+                    "jenis_kelamin": {
+                        "type": "string"
+                    },
+                    "pekerjaan": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            }
+        }
+    }
+
+}

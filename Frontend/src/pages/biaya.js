@@ -1,10 +1,11 @@
 import React,{useState,useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useHistory,useParams, Link,Redirect} from 'react-router-dom';
+import { useHistory,useParams, Link,Redirect,useLocation} from 'react-router-dom';
 import Navbar from "../compenents/navbar";
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import CurrencyFormat from 'react-currency-format';
+import { confirmAlert } from 'react-confirm-alert';
 
 //import react boostrap
 import {Card} from 'react-bootstrap';
@@ -23,10 +24,15 @@ function Biaya(){
     const [role,setRole] = useState('');
     const [sort,setSort] = useState('');
     const [auth,setAuth] = useState([]);
-    const [currentPage,setCurrentPage] = useState(1);
-    const [postsPerPage] = useState(5);
+    const [currentPage,setCurrentPage] = useState(parseInt("")|| sessionStorage.getItem('page'));
+    const [postsPerPage,setPostsPerPage] = useState(parseInt("")|| sessionStorage.getItem('limit'));
     const history = useHistory();
     const Id = localStorage.getItem('id')
+    const location = useLocation();
+    const pagination = "?page="+new URLSearchParams(location.search).get('page')+"&limit="+new URLSearchParams(location.search).get('limit');
+    const Nama = "&search="+new URLSearchParams(location.search).get('search');
+    sessionStorage.setItem('page',new URLSearchParams(location.search).get('page'));
+    sessionStorage.setItem('limit',new URLSearchParams(location.search).get('limit'));
 
     const autorization = () => {
         axios.get(`http://localhost:3000/authenticated`,{
@@ -54,6 +60,16 @@ function Biaya(){
         })
     }
 
+    const getbiayaPagination = () => {
+        if (search === ''){
+            history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}`)
+        }
+        else{
+             history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}&search=${search}`)
+        }
+        window.location.reload();
+    }
+
     useEffect(()=>{
         getBiaya();
         autorization();
@@ -61,35 +77,62 @@ function Biaya(){
     },[])
 
     const getBiaya = () => {
-        axios.get('http://localhost:3000/biaya',{
-            headers: {
-                "x-access-token": localStorage.getItem('token')
-            }})
-        .then(res => {
-            setBiaya(res.data);
-            console.log(res.data);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        if (new URLSearchParams(location.search).get('search') === null){
+            axios.get(`http://localhost:3000/biaya${pagination}`,{
+                headers: {
+                    "x-access-token": localStorage.getItem('token')
+                }})
+            .then(res => {
+                setBiaya(res.data);
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+        else{
+            axios.get(`http://localhost:3000/biaya${pagination}${Nama}`,{
+                    headers: {
+                        "x-access-token": localStorage.getItem('token')
+                    }})
+                .then(res => {
+                    setBiaya(res.data);
+                    console.log(res.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
     }
 
     const deleteBiaya = (id) => {
-       if(window.confirm('Are you sure?')){
-           axios.delete(`http://localhost:3000/biaya/${id}`,{
-               headers: {
-                   "x-access-token": localStorage.getItem('token')
-               }
-           })
-           .then(res => {
-               console.log(res.data);
-               getBiaya();
-           })
-           .catch(err => {
-               console.log(err);
-           })
-       }
+        confirmAlert({
+            title: 'Delete',
+            message: 'Are you sure you want to delete this item?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+                        axios.delete(`http://localhost:3000/penyakit/delete/${id}`)
+                        .then(res => {
+                            console.log(res.data);
+                            getBiaya();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }      
+                },
+                {
+                    label: 'No'
+                }
+            ]});
     }
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+    
     if (role === 'pasien') {
         return <Redirect to='/pasien' />
     }
@@ -132,13 +175,21 @@ function Biaya(){
                             </div>
 
                         {/* fitur cari */}
-                            <div className="p-2 col-example text-left">
+                        <div className="p-2 col-example text-left">
                                 <div className="d-flex flex-row-reverse">
-                                    <div className="p-2">
-                                        <Button variant="outline-primary" size="sm"><BsIcons.BsSearch /></Button>{' '}
+                                    <div className="p">
+                                        <Button variant="btn btn-primary" onClick={getbiayaPagination} size="sm"><BsIcons.BsSearch /></Button>{' '}
                                     </div>
-                                    <div className="p-2">
+                                    <div className="p-3">
                                         <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
+                                    </div>
+                                    <div className="d-flex p-3">
+                                        <label>Limit:</label>
+                                        <Form.Control size="sm" value={postsPerPage} onChange={(e)=> setPostsPerPage(e.target.value)} type="number" placeholder="Cari" />
+                                    </div>
+                                    <div className="d-flex p-3">
+                                        <label>Page:</label>
+                                        <Form.Control size="sm" value={currentPage} onChange={(e)=> setCurrentPage(e.target.value)} type="number" placeholder="Cari" />
                                     </div>
                                 </div>
                             </div>
@@ -159,9 +210,6 @@ function Biaya(){
                                     </thead>
                                     <tbody>
                                         {biaya
-                                        .filter(biaya => {
-                                            return biaya.nama_biaya.toLowerCase().includes(search.toLowerCase())
-                                        })
                                         .sort((a,b) => {
                                             if(sort === 'nama_biaya'){
                                                 return a.nama_biaya > b.nama_biaya ? 1 : -1
@@ -170,7 +218,6 @@ function Biaya(){
                                                 return a.harga > b.harga ? 1 : -1
                                             }
                                         })
-                                        .slice(currentPage * postsPerPage - postsPerPage, currentPage * postsPerPage)
                                         .map((item,index) => {
                                             return(
                                                 <tr key={index}>
@@ -190,32 +237,6 @@ function Biaya(){
                                     </tbody>
                                 </Table>
                             </div>
-                        </div>
-
-                        {/* pagination */}
-                        <div className="d-flex flex-row-reverse">
-                        <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={'...'}
-                                pageCount={Math.ceil(biaya.length / postsPerPage)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                onPageChange={(e)=>setCurrentPage(e.selected+1)}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'}
-                                pageClassName={'page-item'}
-                                previousClassName={'page-item'}
-                                nextClassName={'page-item'}
-                                previousLinkClassName={'page-link'}
-                                nextLinkClassName={'page-link'}
-                                disabledClassName={'disabled'}
-                                activeLinkClassName={'active'}
-                                pageLinkClassName={'page-link'}
-                                breakClassName={'page-item'}
-                                breakLinkClassName={'page-link'}
-                        ></ReactPaginate>
                         </div>
                 </div>
             </div>

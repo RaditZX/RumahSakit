@@ -52,13 +52,17 @@ function Home(){
     useEffect(() => {
         getName();
         autorization();
-    },[]);
+    });
 
     const showDate = () => {
         var today = new Date();
         var getMonth = today.getMonth() + 1;
         var date = today.getDate() + "/" + getMonth + "/" + today.getFullYear() + "," + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         return date;
+    }
+
+      if(localStorage.getItem('token') === null){
+        history.push('/');
     }
 
     return(

@@ -58,7 +58,7 @@ function U_penyakit() {
         // receive response
         .then(res=>{
             console.log(res.data);
-            history.push('/penyakit');
+            history.push('/penyakit?page=1&limit=10');
         })
         // catch error
         .catch(err=>{
@@ -83,9 +83,14 @@ function U_penyakit() {
         autorization();
         getRoles();
     },[]);
+
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
     
     if (role === 'pasien') {
-        return <Redirect to='/pasien'/>
+        return <Redirect to='/home'/>
     }
     else {
          // form edit data penyakit

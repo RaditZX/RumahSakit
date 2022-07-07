@@ -26,7 +26,6 @@ import U_penyakit from "./pages/post/penyakit/updatePenyakit";
 import U_kamar from "./pages/post/kamar/updateKamar";
 import U_biaya from "./pages/post/biaya/updateBiaya";
 import U_profile from "./pages/UpdateProfile";
-import DetailPasien from "./pages/detailpasien";
 
 
 
@@ -74,7 +73,6 @@ function App() {
         <Route exact path="/u_profile" component={U_profile} />
         <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route exact path="/verifikasi/:token" component={Verifikasi} />
-        <Route exact path="/pasien/detail/:Id" component={DetailPasien} />
 
       </Switch>
     </div>

@@ -59,14 +59,19 @@ function T_biaya() {
         })
         .then(res => {
             console.log(res.data);
-            history.push('/biaya');
+            history.push('/biaya?page=1&limit=10');
         })
         .catch(err => {
             console.log(err);
         })
     }
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+
     if (role === 'pasien') {
-        return <Redirect to='/pasien' />
+        return <Redirect to='/home'/>
     }
     else {
         //tambah biaya

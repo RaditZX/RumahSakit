@@ -22,6 +22,7 @@ function Login() {
     const [auth,setAuth] = useState([]);
     const history = useHistory();
     const  Id = localStorage.getItem('id')
+    localStorage.setItem('id',"");
 
     const autorization = () => {
         axios.get(`http://localhost:3000/authenticated`,{

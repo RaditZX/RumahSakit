@@ -129,6 +129,10 @@ function U_pasienbyname() {
         })
     }
 
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+
      // form edit data pasien user
     return(
         <div className="container">

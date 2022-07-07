@@ -60,7 +60,7 @@ function U_kamar() {
         })
         .then(res => {
             console.log(res.data);
-            history.push('/kamar');
+            history.push('/kamar?page=1&limit=10');
         })
         .catch(err => {
             console.log(err);
@@ -87,9 +87,13 @@ function U_kamar() {
         autorization();
         getRoles();
     },[]);
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
     
     if(role === 'pasien'){
-        return <Redirect to='/pasien'/>
+        return <Redirect to='/home'/>
     }
     else{
         //Edit Data kamar

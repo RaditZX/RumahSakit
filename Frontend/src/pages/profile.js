@@ -40,7 +40,7 @@ function Profile(){
     }
 
     const getData = () => {
-        axios.get(`http://localhost:3000/user/${id}`)
+        axios.get(`http://localhost:3000/user/update/${id}`)
         .then(res => {
             setNama_awal(res.data.nama_awal);
             setNama_akhir(res.data.nama_akhir);

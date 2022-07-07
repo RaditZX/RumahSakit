@@ -42,7 +42,6 @@
   background:  #ffffff; 
   display: flex;
   justify-content: center;
-  padding: 0
 
 }
 
@@ -53,12 +52,15 @@
 
 
 .row{
-  width: 80%;
-  padding-top: 6rem ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
 }
 
 .row-profile{
-  width: 80%;
+  width: 100%;
 }
 
 .deskripsi{
@@ -157,7 +159,7 @@
 
 .nav-menu{
   background-color: #333333;
-  width: 10rem;
+  width: 7rem;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -219,7 +221,7 @@
 }
 
 .container-fluid{
-  padding-left: 15rem;
+  padding-left: 9rem;
   padding-top:2rem;
 }
 
@@ -231,6 +233,10 @@ th{
 
 td{
   text-align: center;
+}
+
+label{
+  padding-right: 0.5rem;
 }
 
 

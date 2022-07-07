@@ -63,14 +63,19 @@ function T_kamar() {
         })
         .then(res => {
             console.log(res.data);
-            history.push('/kamar');
+            history.push('/kamar?page=1&limit=10');
         })
         .catch(err => {
             console.log(err);
         })
     }
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
+
     if(role === 'pasien'){
-        return <Redirect to='/pasien'/>
+        return <Redirect to='/home'/>
         
     }
     else{

@@ -9,7 +9,6 @@ import "../App.css";
 import {Card} from 'react-bootstrap';
 import {ListGroup} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
-import { set } from 'mongoose';
 
 //import react router dom
 
@@ -98,13 +97,12 @@ function UpdateProfile(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/user/${id}`,{
+        axios.put(`http://localhost:3000/user/update/${id}`,{
             nama_awal,
             nama_akhir,
             pekerjaan,
             alamat,
             email,
-            profile,
             no_telp
         })
         .then(res => {
@@ -120,6 +118,10 @@ function UpdateProfile(){
         getData();
         autorization();
     },[])
+
+    if(localStorage.getItem('token') === null){
+        history.push('/');
+    }
 
     //profile
     return(
