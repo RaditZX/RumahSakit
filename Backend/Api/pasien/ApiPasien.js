@@ -3,7 +3,7 @@ const Pasien = require('../../model/Pasien');
 class ApiUser {
     constructor() {
         // get all users
-        this.getusers = async (req, res) => {
+        this.getusers =  (req, res) => {
             Pasien.model.aggregate([        
                 {
                     $lookup: {
@@ -90,7 +90,7 @@ class ApiUser {
             ], (err, pasien) => {
                 if (err)
                     res.send(err);
-                res.json(pasien);
+                res.send(pasien);
             }
             );
         };

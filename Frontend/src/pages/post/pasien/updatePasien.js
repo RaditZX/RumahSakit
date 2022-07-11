@@ -31,7 +31,7 @@ function U_pasien() {
     
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -47,7 +47,7 @@ function U_pasien() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `user/${Id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -59,7 +59,7 @@ function U_pasien() {
     const handleSubmit = (e) => {
         e.preventDefault();
       
-        axios.put(`http://localhost:3000/edit/${Id}`,{
+        axios.put(process.env.REACT_APP_API_LINK + `edit/${Id}`,{
             nama,
             alamat,
             no_telp,
@@ -80,7 +80,7 @@ function U_pasien() {
     }
 
     const getpenyakit = () => {
-        axios.get('http://localhost:3000/penyakit')
+        axios.get(process.env.REACT_APP_API_LINK + 'penyakit')
         .then(res => {
             console.log(res);
             setPenyakit(res.data);
@@ -91,7 +91,7 @@ function U_pasien() {
     }
 
     const getkamar = () => {
-        axios.get('http://localhost:3000/kamar')
+        axios.get(process.env.REACT_APP_API_LINK + 'kamar')
         .then(res => {
             console.log(res);
             setKamar(res.data);
@@ -103,7 +103,7 @@ function U_pasien() {
     
 
     const getbiaya = () => {
-        axios.get('http://localhost:3000/biaya')
+        axios.get(process.env.REACT_APP_API_LINK + 'biaya')
         .then(res => {
             console.log(res);
             setBiaya(res.data);
@@ -123,7 +123,7 @@ function U_pasien() {
     },[])
 
     const getPasien = () => {
-        axios.get(`http://localhost:3000/pasien/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `pasien/${Id}`)
         .then(res => {
             setNama(res.data.nama);
             setAlamat(res.data.alamat);

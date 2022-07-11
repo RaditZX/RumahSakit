@@ -1,22 +1,22 @@
 import React,{useState,useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useHistory,useParams, Link,Redirect,useLocation } from 'react-router-dom';
+import { useHistory,Link,Redirect,useLocation } from 'react-router-dom';
 import Navbar from "../compenents/navbar";
 import axios from 'axios';
-import ReactPaginate from 'react-paginate';
+import CryptoJS from 'crypto-js';
 import { confirmAlert } from 'react-confirm-alert';
+import currencyFormatter from 'currency-formatter';
 
 //import react boostrap
-import {Card} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import {Table} from 'react-bootstrap';
-import {Pagination} from 'react-bootstrap';
+
 
 //import react-icons
 import * as BsIcons from 'react-icons/bs';
 import * as MdIcons from 'react-icons/md';
-import CurrencyFormat from 'react-currency-format';
+
 
 function Penyakit(){
     const [penyakit,setPenyakit] = useState([]);
@@ -30,90 +30,12 @@ function Penyakit(){
     const location = useLocation();
     const pagination = "?page="+new URLSearchParams(location.search).get('page')+"&limit="+new URLSearchParams(location.search).get('limit');
     const Nama = "&search="+new URLSearchParams(location.search).get('search');
+    const reqSearch = new URLSearchParams(location.search).get('search');
     sessionStorage.setItem('page',new URLSearchParams(location.search).get('page'));
     sessionStorage.setItem('limit',new URLSearchParams(location.search).get('limit'));
 
-    useEffect(()=>{
-        getPenyakit();
-        autorization();
-        getRoles();
-
-    },[])
-
-    const getpenyakitPagination = () => {
-        if (search === ''){
-            history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}`)
-        }
-        else{
-             history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}&search=${search}`)
-        }
-        window.location.reload();
-    }
-
-    const getPenyakit = () => {  
-        if (new URLSearchParams(location.search).get('search') === null){
-            axios.get(`http://localhost:3000/penyakit${pagination}`,{
-                headers: {
-                    "x-access-token": localStorage.getItem('token')
-                }})
-            .then(res => {
-                setPenyakit(res.data);
-                console.log(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    else{
-        axios.get(`http://localhost:3000/penyakit${pagination}${Nama}`,{
-                headers: {
-                    "x-access-token": localStorage.getItem('token')
-                }})
-            .then(res => {
-                setPenyakit(res.data);
-                console.log(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    }
-
-    const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
-        .then(res => {
-            setRole(res.data.role);
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }
-
-    const deletePenyakit = (id) => {
-        confirmAlert({
-            title: 'Delete',
-            message: 'Are you sure you want to delete this item?',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => {
-                        axios.delete(`http://localhost:3000/penyakit/delete/${id}`)
-                        .then(res => {
-                            console.log(res.data);
-                            getPenyakit();
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                    }      
-                },
-                {
-                    label: 'No'
-                }
-            ]});
-    }
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -128,6 +50,95 @@ function Penyakit(){
         })
     }
 
+    useEffect(()=>{
+        getPenyakit();
+        autorization();
+        getRoles();
+
+    },[])
+
+    const next = () => {
+        history.push(reqSearch?'/penyakit?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/penyakit?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const current = () => {
+        history.push(reqSearch?'/penyakit?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/penyakit?page='+(parseInt(currentPage))+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const prev = () => {
+        history.push(reqSearch?'/penyakit?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/penyakit?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const getpenyakitPagination = () => {
+        if (search === ''){
+            history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}`)
+        }
+        else{
+             history.push(`/penyakit?page=${currentPage}&limit=${postsPerPage}&search=${search}`)
+        }
+        window.location.reload();
+    }
+
+    const getPenyakit = () => {  
+        if (new URLSearchParams(location.search).get('search') === null){
+            axios.get(process.env.REACT_APP_API_LINK+`penyakit${pagination}`,{
+                headers: {
+                    "x-access-token": localStorage.getItem('token')
+                }})
+            .then(res => {
+                setPenyakit(res.data);
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    else{
+        axios.get(process.env.REACT_APP_API_LINK+`penyakit${pagination}${Nama}`,{
+                headers: {
+                    "x-access-token": localStorage.getItem('token')
+                }})
+            .then(res => {
+                setPenyakit(res.data);
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    }
+
+    const getRoles = () => {
+        setRole(CryptoJS.AES.decrypt(localStorage.getItem('role'),'secret key 123').toString(CryptoJS.enc.Utf8));
+    }
+
+    const deletePenyakit = (id) => {
+        confirmAlert({
+            title: 'Delete',
+            message: 'Are you sure you want to delete this item?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+                        axios.delete(process.env.REACT_APP_API_LINK+`penyakit/delete/${id}`)
+                        .then(res => {
+                            console.log(res.data);
+                            getPenyakit();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }      
+                },
+                {
+                    label: 'No'
+                }
+            ]});
+    }
+
     if(localStorage.getItem('token') === null){
         history.push('/');
     }
@@ -135,6 +146,7 @@ function Penyakit(){
     if (role === 'pasien'){
         return <Redirect to='/pasien'/>
     }
+
     else {
         return(
             <div>
@@ -183,20 +195,11 @@ function Penyakit(){
                                     <div className="p-3">
                                         <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
                                     </div>
-                                    <div className="d-flex p-3">
-                                        <label>Limit:</label>
-                                        <Form.Control size="sm" value={postsPerPage} onChange={(e)=> setPostsPerPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
-                                    <div className="d-flex p-3">
-                                        <label>Page:</label>
-                                        <Form.Control size="sm" value={currentPage} onChange={(e)=> setCurrentPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
                             {/* tabel data penyakit */}
-                            <div className="d-flex justify-content-center">
                                 <div class="table-responsive">
                                 <Table class="table align-middle mb-0 bg-white">
                                     <thead class="bg-light">
@@ -233,7 +236,7 @@ function Penyakit(){
                                                         <td>{list.nama_penyakit}</td>
                                                         <td className='deskripsi'>{list.deskripsi}</td>
                                                         <td>{list.obat}</td>
-                                                        <td><CurrencyFormat value={list.harga_obat} displayType={'text'} thousandSeparator={true} prefix={'Rp.'}/></td>
+                                                        <td>{currencyFormatter.format(list.harga_obat, {code: 'IDR'})}</td>
                                                         {role === 'admin' &&
                                                         <td>
                                                             <div className="d-flex justify-content-center">
@@ -249,36 +252,23 @@ function Penyakit(){
                                     </Table>
                                 </div>
                             </div>
-
-                            {/* pagination */}
-                            <div className="d-flex flex-row-reverse">
-                            {/* <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={'...'}
-                                pageCount={penyakit.length / postsPerPage}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                onPageChange={(e)=>setCurrentPage(e.selected)}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                pageClassName={'page-item'}
-                                previousClassName={'page-item'}
-                                nextClassName={'page-item'}
-                                previousLinkClassName={'page-link'}
-                                nextLinkClassName={'page-link'}
-                                disabledClassName={'disabled'}
-                                activeLinkClassName={'active'}
-                                pageLinkClassName={'page-link'}
-                                breakClassName={'page-item'}
-                                breakLinkClassName={'page-link'}
-                            
-                            >
-                            </ReactPaginate> */}
+                        <div className="d-flex justify-content-center p-3">
+                            <div className="btn-group">
+                                <button className="btn" onClick={prev}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                    </svg>
+                                    </button>
+                                <button className="btn" onClick={current}>{currentPage}</button>
+                                <button className="btn" onClick={next}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         )
     }
     

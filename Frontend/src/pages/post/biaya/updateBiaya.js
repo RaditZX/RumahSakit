@@ -22,7 +22,7 @@ function U_biaya() {
     const id = localStorage.getItem('id');
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -38,7 +38,7 @@ function U_biaya() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${id}`)
+        axios.get(process.env.REACT_APP_API_LINK+`/user/${id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -49,7 +49,7 @@ function U_biaya() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/editbiaya/${Id}`,{
+        axios.put(process.env.REACT_APP_API_LINK+`editbiaya/${Id}`,{
             nama_biaya,
             harga,
             deskripsi
@@ -64,7 +64,7 @@ function U_biaya() {
     }
 
     const getBiaya = () => {
-        axios.get(`http://localhost:3000/biaya/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK+`biaya/${Id}`)
         .then(res => {
             console.log(res.data);
             setNama_biaya(res.data.nama_biaya);

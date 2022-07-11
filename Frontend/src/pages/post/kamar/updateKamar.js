@@ -24,7 +24,7 @@ function U_kamar() {
     const id = localStorage.getItem('id');
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -40,7 +40,7 @@ function U_kamar() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `user/${id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -51,7 +51,7 @@ function U_kamar() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/editkamar/${Id}`,{
+        axios.put(process.env.REACT_APP_API_LINK + `editkamar/${Id}`,{
             nama_kamar,
             lantai,
             harga,
@@ -68,7 +68,7 @@ function U_kamar() {
     }
 
     const getKamar = () => {
-        axios.get(`http://localhost:3000/kamar/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `kamar/${Id}`)
         .then(res => {
             console.log(res.data);
             setNama_kamar(res.data.nama_kamar);

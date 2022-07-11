@@ -43,7 +43,7 @@ function T_pasien() {
     }
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -59,7 +59,7 @@ function T_pasien() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `user/${Id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -71,7 +71,7 @@ function T_pasien() {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3000/addpasien',{
+        axios.post(process.env.REACT_APP_API_LINK + 'addpasien',{
             nama,
             alamat,
             no_telp,
@@ -92,7 +92,7 @@ function T_pasien() {
     }
 
     const getpenyakit = () => {
-        axios.get('http://localhost:3000/penyakit',{
+        axios.get(process.env.REACT_APP_API_LINK + 'penyakit',{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -106,7 +106,7 @@ function T_pasien() {
     }
 
     const getkamar = () => {
-        axios.get('http://localhost:3000/kamar',{
+        axios.get(process.env.REACT_APP_API_LINK + 'kamar',{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -120,7 +120,7 @@ function T_pasien() {
     
 
     const getbiaya = () => {
-        axios.get('http://localhost:3000/biaya',{
+        axios.get(process.env.REACT_APP_API_LINK + 'biaya',{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -153,7 +153,7 @@ function T_pasien() {
         return(
             <div className="container">
                 <div className="d-flex justify-content-center">
-                    <div className="row"  style={{"padding-top":"2rem"}}>
+                    <div className="row">
                         <div className="box">
                             <h1>Pasien</h1>
                                 <Form onSubmit={handleSubmit}>

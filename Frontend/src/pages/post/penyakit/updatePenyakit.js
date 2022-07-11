@@ -7,8 +7,6 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //import component react-bootstrap
-import {Card} from "react-bootstrap";
-import {ListGroup} from "react-bootstrap"; 
 import {Form} from "react-bootstrap"
 
 function U_penyakit() {
@@ -22,7 +20,7 @@ function U_penyakit() {
     const id = localStorage.getItem('id');
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -38,7 +36,7 @@ function U_penyakit() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `user/${Id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -49,7 +47,7 @@ function U_penyakit() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/editpenyakit/${Id}`, {
+        axios.put(process.env.REACT_APP_API_LINK + `editpenyakit/${Id}`, {
             nama_penyakit,
             deskripsi,
             obat,
@@ -66,7 +64,7 @@ function U_penyakit() {
         })
     }
     const getPenyakit = () => {
-        axios.get(`http://localhost:3000/penyakit/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `penyakit/${Id}`)
         .then(res => {
             setNama_penyakit(res.data.nama_penyakit);
             setDeskripsi(res.data.deskripsi);

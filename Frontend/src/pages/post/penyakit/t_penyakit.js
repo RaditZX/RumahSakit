@@ -7,8 +7,6 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //import component react-bootstrap
-import {Card} from "react-bootstrap";
-import {ListGroup} from "react-bootstrap"; 
 import {Form} from "react-bootstrap"
 
 function T_penyakit() {
@@ -21,7 +19,7 @@ function T_penyakit() {
     const Id = localStorage.getItem('id')
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -37,7 +35,7 @@ function T_penyakit() {
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
+        axios.get(process.env.REACT_APP_API_LINK + `user/${Id}`)
         .then(res => {
             setRole(res.data.role);
         })
@@ -54,7 +52,7 @@ function T_penyakit() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3000/addpenyakit',{
+        axios.post(process.env.REACT_APP_API_LINK + 'addpenyakit',{
             nama_penyakit,
             deskripsi,
             obat,

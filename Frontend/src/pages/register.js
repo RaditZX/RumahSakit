@@ -28,7 +28,7 @@ function Register() {
     const  Id = localStorage.getItem('id')
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -50,7 +50,7 @@ function Register() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3000/register',{
+        axios.post(process.env.REACT_APP_API_LINK+'register',{
             email,
             password,
             verifikasi,

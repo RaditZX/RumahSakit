@@ -4,9 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../compenents/navbar";
 import "../App.css";
 import axios from 'axios';
-import ReactPaginate from 'react-paginate';
+import CryptoJS from 'crypto-js';
 import jsPDF from 'jspdf';
-import CurrencyFormat from 'react-currency-format';
 import currencyFormatter from 'currency-formatter';
 
 //import react boostrap
@@ -18,6 +17,7 @@ import { confirmAlert } from 'react-confirm-alert';
 //import react-icons
 import * as BsIcons from 'react-icons/bs';
 import * as MdIcons from 'react-icons/md';
+
 
 function Pasien(){
     const [pasien,setPasien] = useState([]);
@@ -33,8 +33,10 @@ function Pasien(){
     const location = useLocation();
     const pagination = "?page="+new URLSearchParams(location.search).get('page')+"&limit="+new URLSearchParams(location.search).get('limit');
     const Nama = "&search="+new URLSearchParams(location.search).get('search');
+    const reqSearch= new URLSearchParams(location.search).get('search');
     sessionStorage.setItem('page',new URLSearchParams(location.search).get('page'));
     sessionStorage.setItem('limit',new URLSearchParams(location.search).get('limit'));
+    sessionStorage.setItem('search',new URLSearchParams(location.search).get('search'));
 
     useEffect(()=>{
         autorization();
@@ -55,7 +57,7 @@ function Pasien(){
 
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -70,21 +72,27 @@ function Pasien(){
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
-        .then(res => {
-            setRole(res.data.role);
-            setName(res.data.nama_awal)
-            console.log(res.data.nama_awal)
-            
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }   
+        setRole(CryptoJS.AES.decrypt(localStorage.getItem('role'),'secret key 123').toString(CryptoJS.enc.Utf8));
+    } 
+    
+    const next = () => {
+        history.push(reqSearch?'/pasien?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/pasien?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const current = () => {
+        history.push(reqSearch?'/pasien?page='+(parseInt(currentPage))+'&limit='+sessionStorage.getItem('limit')+ Nama:'/pasien?page='+(parseInt(currentPage))+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const prev = () => {
+        history.push(reqSearch?'/pasien?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/pasien?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
 
     const getPasien = () => {
         if ( new URLSearchParams(location.search).get('search') === null ) {
-            axios.get(`http://localhost:3000/pasien${pagination}`)     
+            axios.get(process.env.REACT_APP_API_LINK+`pasien${pagination}`)     
             .then(res => {
                 console.log(res.data);
                 setPasien(res.data);
@@ -94,7 +102,7 @@ function Pasien(){
             })
         }
         else{
-            axios.get(`http://localhost:3000/pasien${pagination}${Nama}`)     
+            axios.get(process.env.REACT_APP_API_LINK+`pasien${pagination}${Nama}`)     
             .then(res => {
                 console.log(res.data);
                 setPasien(res.data);
@@ -114,7 +122,7 @@ function Pasien(){
                 {
                     label: 'Yes',
                     onClick: () => {
-                        axios.delete(`http://localhost:3000/pasien/delete/${id}`)
+                        axios.delete(process.env.REACT_APP_API_LINK+`pasien/delete/${id}`)
                         .then(res => {
                             console.log(res.data);
                             getPasien();
@@ -199,14 +207,6 @@ function Pasien(){
                                     <div className="p-3">
                                         <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
                                     </div>
-                                    <div className="d-flex p-3">
-                                        <label>Limit:</label>
-                                        <Form.Control size="sm" value={postsPerPage} onChange={(e)=> setPostsPerPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
-                                    <div className="d-flex p-3">
-                                        <label>Page:</label>
-                                        <Form.Control size="sm" value={currentPage} onChange={(e)=> setCurrentPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
                                 </div>
                         </div>
                     </div>
@@ -266,7 +266,7 @@ function Pasien(){
                                                     <td>{biaya.nama_biaya}</td>
                                                 )
                                             })}
-                                            <td><CurrencyFormat value={pasien.biaya_perawatan+pasien.biaya_kamar+pasien.biaya_obat} displayType={'text'} thousandSeparator={true} prefix={'Rp.'}/></td>
+                                            <td>{currencyFormatter.format(pasien.biaya_perawatan+pasien.biaya_kamar+pasien.biaya_obat, {code: 'IDR'})}</td>
                                             { role === 'pasien' ?
                                             <td>
                                                 {pasien.penyakit.map((penyakit,index)  => {
@@ -331,6 +331,21 @@ function Pasien(){
                             </tbody>
                         </Table>
                     </div>
+                    <div className="d-flex justify-content-center p-3">
+                        <div className="btn-group">
+                            <button className="btn" onClick={prev}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                    <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                </svg>
+                                </button>
+                            <button className="btn" onClick={current}>{currentPage}</button>
+                            <button className="btn" onClick={next}>
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                    <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                                </svg>
+                            </button>
+                        </div>
+                     </div>
                 </div>
             </div>
         </>

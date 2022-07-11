@@ -28,7 +28,7 @@ function Reset() {
     const handelSubmit = (e) => {
         e.preventDefault();
         if (password === confirmPassword){
-            axios.put(`http://localhost:3000/reset/${token}`,{
+            axios.put(process.env.REACT_APP_API_LINK+`reset/${token}`,{
                 password,
                 confirmPassword
             })

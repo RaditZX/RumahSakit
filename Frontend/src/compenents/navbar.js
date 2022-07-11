@@ -4,12 +4,9 @@ import {useHistory} from 'react-router-dom';
 import {NavLink,Link} from 'react-router-dom';
 import axios from 'axios';
 import { confirmAlert } from 'react-confirm-alert';
+import CryptoJS from 'crypto-js';
 import "react-confirm-alert/src/react-confirm-alert.css";
 
-
-//import icons
-import * as IoIcons from 'react-icons/io';
-import * as AiIcons from 'react-icons/ai';
 
 //import sidebar
 import { SidebarData,SidebarAdmin,logout,SidebarPasien }from './sidebar';
@@ -27,19 +24,13 @@ function Navbar() {
     const history = useHistory();
     const Id = localStorage.getItem('id')
 
-    const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
-        .then(res => {
-            setRole(res.data.role);
-            setNama(res.data.nama_awal)
-        })
-        .catch(err => {
-            console.log(err);
-        })
+    const getrole = () => {
+        setRole(CryptoJS.AES.decrypt(localStorage.getItem('role'),'secret key 123').toString(CryptoJS.enc.Utf8));
     }
 
+
     useEffect(() => {
-        getRoles();
+        getrole();
     },[])
 
     const Logout = () => {

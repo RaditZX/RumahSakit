@@ -1,12 +1,11 @@
 import React,{useState,useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useHistory,useParams } from 'react-router-dom';
+import { useHistory} from 'react-router-dom';
 import Navbar from "../compenents/navbar";
 import axios from 'axios';
 
 //import boostrap
 import {Card, ListGroup} from 'react-bootstrap';
-import * as FaIcons from 'react-icons/fa';
 import * as IoIcons from 'react-icons/io';
 import * as MdIcons from 'react-icons/md';
 import * as BsIcons from 'react-icons/bs';

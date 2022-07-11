@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {useHistory,useParams,Redirect} from 'react-router-dom';
+import {useHistory,useParams} from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import "../../../App.css";
@@ -7,8 +7,6 @@ import "../../../App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //import component react-bootstrap
-import {Card} from "react-bootstrap";
-import {ListGroup} from "react-bootstrap"; 
 import {Form} from "react-bootstrap"
 
 function U_pasienbyname() {
@@ -29,7 +27,7 @@ function U_pasienbyname() {
     
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK + `authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -47,7 +45,7 @@ function U_pasienbyname() {
     const handleSubmit = (e) => {
         e.preventDefault();
       
-        axios.put(`http://localhost:3000/edit/pasienbyname/${name}`,{
+        axios.put(process.env.REACT_APP_API_LINK + `edit/pasienbyname/${name}`,{
             nama,
             alamat,
             no_telp,
@@ -68,7 +66,7 @@ function U_pasienbyname() {
     }
 
     const getpenyakit = () => {
-        axios.get('http://localhost:3000/penyakit')
+        axios.get(process.env.REACT_APP_API_LINK + 'penyakit')
         .then(res => {
             console.log(res);
             setPenyakit(res.data);
@@ -79,7 +77,7 @@ function U_pasienbyname() {
     }
 
     const getkamar = () => {
-        axios.get('http://localhost:3000/kamar')
+        axios.get(process.env.REACT_APP_API_LINK + 'kamar')
         .then(res => {
             console.log(res);
             setKamar(res.data);
@@ -91,7 +89,7 @@ function U_pasienbyname() {
     
 
     const getbiaya = () => {
-        axios.get('http://localhost:3000/biaya')
+        axios.get(process.env.REACT_APP_API_LINK + 'biaya')
         .then(res => {
             console.log(res);
             setBiaya(res.data);
@@ -110,7 +108,7 @@ function U_pasienbyname() {
     },[])
 
     const getPasien = () => {
-        axios.get(`http://localhost:3000/pasien/namapasien/${name}`)
+        axios.get(process.env.REACT_APP_API_LINK + `pasien/namapasien/${name}`)
         .then(res => {
             setNama(res.data.nama);
             setAlamat(res.data.alamat);

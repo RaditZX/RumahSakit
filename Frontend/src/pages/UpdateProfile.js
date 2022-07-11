@@ -28,7 +28,7 @@ function UpdateProfile(){
     const id = localStorage.getItem('id');
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -44,7 +44,7 @@ function UpdateProfile(){
     }
 
     const getData = () => {
-        axios.get(`http://localhost:3000/user/${id}`)
+        axios.get(process.env.REACT_APP_API_LINK+`user/${id}`)
         .then(res => {
             setNama_awal(res.data.nama_awal);
             setNama_akhir(res.data.nama_akhir);
@@ -76,7 +76,7 @@ function UpdateProfile(){
     const verifyemail = (e) => {
         if(verfikasi === false){
             e.preventDefault();
-            axios.post('http://localhost:3000/verifyemail',{
+            axios.post(process.env.REACT_APP_API_LINK+'verifyemail',{
                 email
             })
             .then(res => {
@@ -97,7 +97,7 @@ function UpdateProfile(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/user/update/${id}`,{
+        axios.put(process.env.REACT_APP_API_LINK+`user/update/${id}`,{
             nama_awal,
             nama_akhir,
             pekerjaan,

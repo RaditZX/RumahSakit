@@ -1,12 +1,11 @@
-module.exports = (app) => {
-
 const user = require('../Api/pasien/ApiPasien');
-const auth = require('../Api/auth/ApiAuth')
+const auth = require('../Api/Auth/ApiAuth')
 const kamar = require('../Api/kamar/ApiKamar')
 const penyakit = require('../Api/penyakit/ApiPenyakit')
 const biaya = require('../Api/Biayaperawatan/ApiBiaya')
+const player = require('./player.json')
 
-
+module.exports = (app) => {
 
 //Route pasien
 app.get('/pasien', user.getusers ) 

@@ -1,0 +1,14 @@
+{
+    "player":[
+        {
+            "name":"Player 1",
+            "score":0,
+            "turn":true
+        },
+        {
+            "name":"Player 2",
+            "score":0,
+            "turn":false
+        }
+    ]
+}

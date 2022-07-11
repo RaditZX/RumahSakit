@@ -10,7 +10,7 @@ function Verifikasi() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:3000/verifikasi/${token}`)
+        axios.put(process.env.REACT_APP_API_LINK+`verifikasi/${token}`)
         .then(res => {
             setStatus(true);
         })

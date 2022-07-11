@@ -1,19 +1,17 @@
 import React,{useState,useEffect} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useHistory,useParams, Link,Redirect,useLocation } from 'react-router-dom';
+import { useHistory, Link,Redirect,useLocation } from 'react-router-dom';
 import Navbar from "../compenents/navbar";
 import axios from "axios";
-import ReactPaginate from 'react-paginate';
-import CurrencyFormat from 'react-currency-format';
+import CryptoJS from 'crypto-js';
+import currencyFormatter from 'currency-formatter';
 import { confirmAlert } from 'react-confirm-alert';
 import '../App.css';
 
 //import react boostrap
-import {Card} from 'react-bootstrap';
 import {Form} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import {Table} from 'react-bootstrap';
-import {Pagination} from 'react-bootstrap';
 
 //import react-icons
 import * as BsIcons from 'react-icons/bs';
@@ -31,12 +29,13 @@ function Kamar(){
     const location = useLocation();
     const pagination = "?page="+new URLSearchParams(location.search).get('page')+"&limit="+new URLSearchParams(location.search).get('limit');
     const Nama = "&search="+new URLSearchParams(location.search).get('search');
+    const reqSearch = new URLSearchParams(location.search).get('search');
     sessionStorage.setItem('page',new URLSearchParams(location.search).get('page'));
     sessionStorage.setItem('limit',new URLSearchParams(location.search).get('limit'));
 
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated/${localStorage.getItem('token')}`)
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`)
         .then(res => {
             console.log(res.data.auth);
             if(res.data.auth === false){
@@ -49,13 +48,7 @@ function Kamar(){
     }
 
     const getRoles = () => {
-        axios.get(`http://localhost:3000/user/${Id}`)
-        .then(res => {
-            setRole(res.data.role);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        setRole(CryptoJS.AES.decrypt(localStorage.getItem('role'),'secret key 123').toString(CryptoJS.enc.Utf8));
     }
 
     const getkamarPagination = () => {
@@ -74,9 +67,24 @@ function Kamar(){
         getRoles();
     },[])
 
+    const next = () => {
+        history.push(reqSearch?'/kamar?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/kamar?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const current = () => {
+        history.push(reqSearch?'/kamar?page='+(parseInt(currentPage)+1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/kamar?page='+(parseInt(currentPage))+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
+    const prev = () => {
+        history.push(reqSearch?'/kamar?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit')+ Nama:'/kamar?page='+(parseInt(currentPage)-1)+'&limit='+sessionStorage.getItem('limit'));
+        window.location.reload();
+    }
+
     const getKamar = () => {
         if (new URLSearchParams(location.search).get('search') === null){
-            axios.get(`http://localhost:3000/kamar${pagination}`,{
+            axios.get(process.env.REACT_APP_API_LINK+`kamar${pagination}`,{
                 headers: {
                     "x-access-token": localStorage.getItem('token')
                 }})
@@ -89,7 +97,7 @@ function Kamar(){
             })
         }
         else{
-            axios.get(`http://localhost:3000/kamar${pagination}${Nama}`,{
+            axios.get(process.env.REACT_APP_API_LINK+`kamar${pagination}${Nama}`,{
                     headers: {
                         "x-access-token": localStorage.getItem('token')
                     }})
@@ -111,7 +119,7 @@ function Kamar(){
                 {
                     label: 'Yes',
                     onClick: () => {
-                        axios.delete(`http://localhost:3000/penyakit/delete/${id}`)
+                        axios.delete(process.env.REACT_APP_API_LINK+`/kamar/delete/${id}`)
                         .then(res => {
                             console.log(res.data);
                             getKamar();
@@ -181,20 +189,11 @@ function Kamar(){
                                     <div className="p-3">
                                         <Form.Control size="sm" value={search} onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Cari" />
                                     </div>
-                                    <div className="d-flex p-3">
-                                        <label>Limit:</label>
-                                        <Form.Control size="sm" value={postsPerPage} onChange={(e)=> setPostsPerPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
-                                    <div className="d-flex p-3">
-                                        <label>Page:</label>
-                                        <Form.Control size="sm" value={currentPage} onChange={(e)=> setCurrentPage(e.target.value)} type="number" placeholder="Cari" />
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         {/* tabel data kamar */}
-                        <div className="d-flex justify-content-center">
                             <div class="table-responsive">
                             <Table class="table align-middle mb-0 bg-white">
                                 <thead class="bg-light">
@@ -227,7 +226,7 @@ function Kamar(){
                                                     <td>{index+1}</td>
                                                     <td>{kamar.nama_kamar}</td>
                                                     <td>{kamar.lantai}</td>
-                                                    <td><CurrencyFormat value={kamar.harga} displayType={'text'} thousandSeparator={true} prefix={'Rp.'}/></td>
+                                                    <td>{currencyFormatter.format(kamar.harga,{code: 'IDR'})}</td>
                                                     <td>{kamar.status}</td>
                                                     <td className='deskripsi'>{kamar.deskripsi}</td>
                                                     {role === 'admin' &&
@@ -243,36 +242,23 @@ function Kamar(){
                                     </tbody>
                                 </Table>
                             </div>
+                            <div className="d-flex justify-content-center p-3">
+                        <div className="btn-group">
+                            <button className="btn" onClick={prev}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                    <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                                </svg>
+                                </button>
+                            <button className="btn" onClick={current}>{currentPage}</button>
+                            <button className="btn" onClick={next}>
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                    <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                                </svg>
+                            </button>
                         </div>
-
-                        {/* pagination */}
-                        <div className="d-flex flex-row-reverse">
-                        {/* <ReactPaginate
-                                previousLabel={'previous'}
-                                nextLabel={'next'}
-                                breakLabel={'...'}
-                                pageCount={Math.ceil(kamar.length / postsPerPage)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                onPageChange={(e)=>setCurrentPage(e.selected+1)}
-                                containerClassName={'pagination'}
-                                subContainerClassName={'pages pagination'}
-                                activeClassName={'active'}
-                                pageClassName={'page-item'}
-                                previousClassName={'page-item'}
-                                nextClassName={'page-item'}
-                                previousLinkClassName={'page-link'}
-                                nextLinkClassName={'page-link'}
-                                disabledClassName={'disabled'}
-                                activeLinkClassName={'active'}
-                                pageLinkClassName={'page-link'}
-                                breakClassName={'page-item'}
-                                breakLinkClassName={'page-link'}
-                        ></ReactPaginate> */}
+                     </div>
                         </div>
-    
                 </div>
-            </div>
         )
     }
 

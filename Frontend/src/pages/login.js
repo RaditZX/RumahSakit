@@ -1,6 +1,7 @@
 //import react
 import {useState,useEffect} from "react";
-import {Link,useHistory,Redirect} from 'react-router-dom';
+import {Link,useHistory} from 'react-router-dom';
+import cryptojs from 'crypto-js';
 import axios from 'axios';
 
 //import boostrap
@@ -10,22 +11,16 @@ import  'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 //import component react-bootstrap
-import {Card} from "react-bootstrap";
-import {ListGroup} from "react-bootstrap"; 
 import {Form} from "react-bootstrap"
-import lambang from "../image/icon.png";
 
 function Login() {
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [error,setError] = useState('');
-    const [auth,setAuth] = useState([]);
     const history = useHistory();
-    const  Id = localStorage.getItem('id')
-    localStorage.setItem('id',"");
 
     const autorization = () => {
-        axios.get(`http://localhost:3000/authenticated`,{
+        axios.get(process.env.REACT_APP_API_LINK+`authenticated`,{
             headers: {
                 "x-access-token": localStorage.getItem('token')
             }})
@@ -46,14 +41,15 @@ function Login() {
 
     const handelSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3000/login',{
+        axios.post(process.env.REACT_APP_API_LINK+'login',{
             email,
             password
         })
         .then(res => {
             console.log(res.data);
             localStorage.setItem('token',res.data.accessToken);
-            localStorage.setItem('id',res.data.user.id);
+            localStorage.setItem('id',res.data.user.id?res.data.user.id:'');
+            localStorage.setItem('role',cryptojs.AES.encrypt(res.data.user.role, 'secret key 123'));
             history.push('/home');
 
         })
